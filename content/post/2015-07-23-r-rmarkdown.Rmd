@@ -1,0 +1,116 @@
+---
+title: "Age composition of the Canadian population"
+author: "CHENG CHEN"
+date: 2020-09-23T21:13:14-05:00
+categories: ["R"]
+tags: ["R Markdown", "plot", "regression"]
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+install.packages("tidyverse")
+install.packages("devtools")
+devtools::install_github("hodgettsp/cesR")
+library(tidyverse)
+library(visdat)
+library(cesR)
+library(skimr)
+```
+
+# abstract: 
+"We investigated the 2019 CES data and results showed it goes population ageing"
+
+# Introduction
+
+Interested in the age composition of the Canadian population.
+
+So we selected two sets of data from the 2019 Canadian Election Study which are pes19_age and pes19_health. After that, we made a histogram of pes19_age and made a bar plot of pes19_health.
+
+By comparing the two pictures, we get the result of Canada's aging population.
+
+
+```{r download, warning=FALSE, message=FALSE}
+# install.packages("devtools")
+# devtools::install_github("hodgettsp/cesR")
+
+cesR::get_cescodes()
+cesR::get_ces("ces2019_web")
+glimpse(ces2019_web)
+```
+
+# Data
+
+The CES dataset is the 2019 Canadian Election Study
+
+```{r}
+head(ces2019_web)
+```
+
+```{r}
+#visdat::vis_dat(ces2019_web) 
+
+#skimr::skim(ces2019_web)
+
+#class(ces2019_web$ces_code)
+
+ces2019 <- 
+  ces2019_web %>% 
+  select(pes19_age,pes19_health)
+
+```
+
+The variables we focus on are people's age and health. The variables pes19_health here represents how would people describe their health compared to other people at their age.
+
+```{r}
+ces2019 %>% 
+  ggplot(aes(x = pes19_health)) + 
+  geom_bar()+
+  labs(x = "health",
+       y = "Number",
+       title = "Distribution of people's health in 2019 CES") +
+  theme_bw()
+```
+
+```{r}
+ces2019 %>% 
+  ggplot(aes(x = pes19_age)) +
+  geom_histogram()+
+  labs(x = "age",
+       y = "Number",
+       title = "Distribution of people's age in 2019 CES") +
+  theme_bw()
+```
+
+In the first graph, we divide health into five levels which are Excellent(1),Very good (2),Fair (3) ,Poor (4) and Don't know/ Prefer not to answer (5). From the bar plot we can see that most people think that they are in a very good healthy state compared to other peers. Only about 500 people think that their physical condition is not as good as that of people of their age. From the histogram about age, the histogram has one mode around about 65 age. It can be seen that most of the people taking part in this survey are elderly.
+
+
+
+
+
+# Discussion
+
+By observing the two sets of data of pes19_age and pes19_health, we found that most of the participants in this survey are elderly, which can reflect that the number of elderly in the Canadian population may be more. In terms of health, most people think they are healthier than their peers. Combine this result with the previous age to observe, this reflects Canada’s aging population.
+
+
+
+
+## Weaknesses and next steps
+
+My weaknesses is did not clean up the data, such as deleting the outliers.
+Next steps should be organize these two sets of data and place them in one plot for more intuitive observation.
+
+
+
+
+
+
+
+# References
+
+- Stephenson, Laura B; Harell, Allison; Rubenson, Daniel; Loewen, Peter John, 2020, '2019 Canadian Election Study - Online Survey', https://doi.org/10.7910/DVN/DUS88V, Harvard Dataverse, V1
+- Wickham et al., (2019). Welcome to the tidyverse. Journal of Open
+  Source Software, 4(43), 1686, https://doi.org/10.21105/joss.01686
+-  Hadley Wickham, Jim Hester and Winston Chang (2020). devtools: Tools to Make Developing R Packages Easier. https://devtools.r-lib.org/,https://github.com/r-lib/devtools.
+- Paul A. Hodgetts and Rohan Alexander (2020). cesR: Access the CES
+  Datasets a Little Easier.. R package version 0.1.0.
+- JJ Allaire and Yihui Xie and Jonathan McPherson and Javier Luraschi and Kevin Ushey and Aron Atkins and Hadley Wickham and Joe Cheng and Winston Chang and Richard Iannone (2020). rmarkdown: Dynamic Documents for R. R package version 2.3. URL https://rmarkdown.rstudio.com.
